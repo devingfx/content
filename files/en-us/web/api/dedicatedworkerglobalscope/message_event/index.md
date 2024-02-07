@@ -81,15 +81,26 @@ myWorker.onmessage = (e) => {
 Alternatively, the script can listen for the message using [`addEventListener()`](/en-US/docs/Web/API/EventTarget/addEventListener):
 
 ```js
-// worker.js
+// main.js
 
-self.addEventListener("message", (e) => {
+myWorker.addEventListener("message", (e) => {
   result.textContent = e.data;
   console.log("Message received from worker");
 });
 ```
 
-Notice how in the main script, `onmessage` has to be called on `myWorker`, whereas inside the worker script you just need `onmessage` because the worker is effectively the global scope ({{domxref("DedicatedWorkerGlobalScope")}}).
+Notice: In the main script, `onmessage` has to be called on `myWorker`, whereas inside the worker script you just need `onmessage` because the worker is effectively the global scope ({{domxref("DedicatedWorkerGlobalScope")}}).
+
+```js
+// worker.js
+
+onmessage = (e) => {
+  console.log("Message received from main script");
+  const workerResult = `Result: ${e.data[0] * e.data[1]}`;
+  console.log("Posting message back to main script");
+  postMessage(workerResult);
+};
+```
 
 For a full example, see our [Basic dedicated worker example](https://github.com/mdn/dom-examples/tree/main/web-workers/simple-web-worker) ([run dedicated worker](https://mdn.github.io/dom-examples/web-workers/simple-web-worker/)).
 
